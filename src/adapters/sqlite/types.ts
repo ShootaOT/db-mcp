@@ -137,7 +137,7 @@ export const JsonInsertSchema = z.object({
     table: z.string().describe('Table name'),
     column: z.string().describe('JSON column name'),
     data: z.unknown().describe('JSON data to insert (auto-normalized)'),
-    additionalColumns: z.record(z.unknown()).optional().describe('Other column values')
+    additionalColumns: z.record(z.string(), z.unknown()).optional().describe('Other column values')
 });
 
 export const JsonUpdateSchema = z.object({
@@ -158,7 +158,7 @@ export const JsonSelectSchema = z.object({
 export const JsonQuerySchema = z.object({
     table: z.string().describe('Table name'),
     column: z.string().describe('JSON column name'),
-    filterPaths: z.record(z.unknown()).optional().describe('Path-value filters'),
+    filterPaths: z.record(z.string(), z.unknown()).optional().describe('Path-value filters'),
     selectPaths: z.array(z.string()).optional().describe('Paths to select'),
     limit: z.number().optional().default(100)
 });
