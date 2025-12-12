@@ -324,7 +324,7 @@ export class NativeSqliteAdapter extends DatabaseAdapter {
             geospatial: true,
             transactions: true,
             preparedStatements: true,
-            connectionPooling: false,
+            connectionPooling: false, // better-sqlite3 is single-connection
             windowFunctions: true,
             spatialite: true
         };

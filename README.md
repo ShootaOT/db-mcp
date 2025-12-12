@@ -131,6 +131,25 @@ Use `:memory:` for a temporary in-memory database:
 
 ---
 
+## Architecture: SQLite-Only Server
+
+> [!IMPORTANT]
+> **Why one database per MCP server?** AI-enabled IDEs like Cursor have practical limits on the number of tools an MCP server can register. With 89+ tools for SQLite alone, combining multiple database systems (PostgreSQL, MySQL, etc.) into a single MCP server would exceed these limits and degrade the user experience.
+
+Each database system requires its own independent MCP server:
+
+| Project | Database | Status |
+|---------|----------|--------|
+| **db-mcp** (this repo) | SQLite | ✅ Complete (89 tools) |
+| **postgres-mcp** | PostgreSQL | Future (separate project) |
+| **mysql-mcp** | MySQL | Future (separate project) |
+| **mongo-mcp** | MongoDB | Future (separate project) |
+| **redis-mcp** | Redis | Future (separate project) |
+
+> Each MCP server is **fully independent** with no shared runtime dependencies. Users install only the database server(s) they need.
+
+---
+
 ## Features
 
 - 🔐 **OAuth 2.0 Authentication** - RFC 9728/8414 compliant token-based authentication

@@ -1,5 +1,5 @@
 /**
- * db-mcp - Multi-database MCP Server
+ * db-mcp - SQLite MCP Server
  * 
  * Core type definitions for the MCP server, database adapters,
  * OAuth 2.0 authentication, and tool filtering.
@@ -11,6 +11,9 @@
 
 /**
  * Supported database types
+ * 
+ * Note: This MCP server only supports SQLite. Other database types are listed
+ * here for type compatibility but would require separate MCP server projects.
  */
 export type DatabaseType =
     | 'sqlite'
