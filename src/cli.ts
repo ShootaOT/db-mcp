@@ -234,14 +234,16 @@ async function main(): Promise<void> {
         const server = createServer(config);
 
         // Handle shutdown signals
-        process.on('SIGINT', async () => {
-            await server.shutdown();
-            process.exit(0);
+        process.on('SIGINT', () => {
+            void server.shutdown().then(() => {
+                process.exit(0);
+            });
         });
 
-        process.on('SIGTERM', async () => {
-            await server.shutdown();
-            process.exit(0);
+        process.on('SIGTERM', () => {
+            void server.shutdown().then(() => {
+                process.exit(0);
+            });
         });
 
         // TODO: Register database adapters based on config.databases

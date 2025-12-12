@@ -14,7 +14,6 @@
 
 import type {
     ToolGroup,
-    ToolFilterRule,
     ToolFilterConfig,
     ToolDefinition
 } from '../types/index.js';
@@ -175,7 +174,7 @@ export function parseToolFilter(filterString: string | undefined): ToolFilterCon
             // Apply the rule
             if (isGroup) {
                 const groupTools = TOOL_GROUPS[target as ToolGroup];
-                if (groupTools) {
+                if (groupTools.length > 0) {
                     for (const tool of groupTools) {
                         config.enabledTools.delete(tool);
                     }
@@ -196,7 +195,7 @@ export function parseToolFilter(filterString: string | undefined): ToolFilterCon
             // Apply the rule
             if (isGroup) {
                 const groupTools = TOOL_GROUPS[target as ToolGroup];
-                if (groupTools) {
+                if (groupTools.length > 0) {
                     for (const tool of groupTools) {
                         config.enabledTools.add(tool);
                     }
@@ -245,7 +244,7 @@ export function getToolFilterFromEnv(): ToolFilterConfig {
 export function calculateTokenSavings(
     totalTools: number,
     enabledTools: number,
-    tokensPerTool: number = 200
+    tokensPerTool = 200
 ): { tokensSaved: number; percentSaved: number } {
     const disabledTools = totalTools - enabledTools;
     const tokensSaved = disabledTools * tokensPerTool;

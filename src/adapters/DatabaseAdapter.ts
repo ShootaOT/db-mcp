@@ -36,7 +36,7 @@ export abstract class DatabaseAdapter {
     abstract readonly version: string;
 
     /** Connection status */
-    protected connected: boolean = false;
+    protected connected = false;
 
     /** Database configuration */
     protected config: DatabaseConfig | null = null;

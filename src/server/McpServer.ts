@@ -10,10 +10,9 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import type {
     McpServerConfig,
     DatabaseConfig,
-    RequestContext,
     ToolFilterConfig
 } from '../types/index.js';
-import { DatabaseAdapter } from '../adapters/DatabaseAdapter.js';
+import { type DatabaseAdapter } from '../adapters/DatabaseAdapter.js';
 import {
     parseToolFilter,
     getFilterSummary,
@@ -27,7 +26,7 @@ import {
  */
 export class DbMcpServer {
     private server: McpServer;
-    private adapters: Map<string, DatabaseAdapter> = new Map();
+    private adapters = new Map<string, DatabaseAdapter>();
     private toolFilter: ToolFilterConfig;
     private config: McpServerConfig;
 
@@ -91,11 +90,13 @@ export class DbMcpServer {
      */
     private registerBuiltInTools(): void {
         // Server info tool
+        // Using server.tool pattern (deprecated but registerTool API differs)
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         this.server.tool(
             'server_info',
             'Get information about the db-mcp server and registered adapters',
             {},
-            async () => {
+            () => {
                 const adapterInfo = [];
                 for (const [id, adapter] of this.adapters) {
                     adapterInfo.push({
@@ -106,7 +107,7 @@ export class DbMcpServer {
 
                 return {
                     content: [{
-                        type: 'text',
+                        type: 'text' as const,
                         text: JSON.stringify({
                             name: this.config.name,
                             version: this.config.version,
@@ -123,6 +124,7 @@ export class DbMcpServer {
         );
 
         // Health check tool
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         this.server.tool(
             'server_health',
             'Check health status of all database connections',
@@ -148,7 +150,7 @@ export class DbMcpServer {
 
                 return {
                     content: [{
-                        type: 'text',
+                        type: 'text' as const,
                         text: JSON.stringify(health, null, 2)
                     }]
                 };
@@ -156,11 +158,12 @@ export class DbMcpServer {
         );
 
         // List adapters tool
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         this.server.tool(
             'list_adapters',
             'List all registered database adapters',
             {},
-            async () => {
+            () => {
                 const adapters = [];
                 for (const [id, adapter] of this.adapters) {
                     adapters.push({
@@ -174,7 +177,7 @@ export class DbMcpServer {
 
                 return {
                     content: [{
-                        type: 'text',
+                        type: 'text' as const,
                         text: JSON.stringify(adapters, null, 2)
                     }]
                 };
@@ -191,7 +194,7 @@ export class DbMcpServer {
                 await this.startStdio();
                 break;
             case 'http':
-                await this.startHttp();
+                this.startHttp();
                 break;
             default:
                 throw new Error(`Unsupported transport: ${this.config.transport}`);
@@ -211,12 +214,12 @@ export class DbMcpServer {
      * Start server with HTTP transport (Streamable HTTP)
      * TODO: Implement after OAuth integration
      */
-    private async startHttp(): Promise<void> {
+    private startHttp(): void {
         const port = this.config.port ?? 3000;
 
         // Placeholder for HTTP transport implementation
         // This will use express + @modelcontextprotocol/sdk HTTP transport
-        console.error(`HTTP transport not yet implemented (port ${port})`);
+        console.error(`HTTP transport not yet implemented (port ${String(port)})`);
         throw new Error('HTTP transport not yet implemented');
     }
 

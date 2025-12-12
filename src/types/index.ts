@@ -376,11 +376,11 @@ export interface PromptDefinition {
     description: string;
 
     /** Argument definitions */
-    arguments?: Array<{
+    arguments?: {
         name: string;
         description: string;
         required?: boolean;
-    }>;
+    }[];
 
     /** Prompt handler */
     handler: (args: Record<string, string>, context: RequestContext) => Promise<unknown>;
