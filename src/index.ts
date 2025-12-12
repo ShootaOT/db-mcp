@@ -1,25 +1,73 @@
 /**
  * db-mcp - Multi-database MCP Server
  * 
- * This is a placeholder file to enable CodeQL analysis.
- * It will be replaced with actual implementation.
+ * Main entry point and public API exports.
  */
 
-export const VERSION = '0.0.1';
+// Core server
+export { DbMcpServer, createServer, DEFAULT_CONFIG } from './server/McpServer.js';
 
-export interface DatabaseConfig {
-    type: 'sqlite' | 'mysql' | 'postgresql' | 'mongodb' | 'redis' | 'sqlserver';
-    connectionString?: string;
-}
+// Types
+export type {
+    // Database types
+    DatabaseType,
+    DatabaseConfig,
+    HealthStatus,
+    QueryResult,
+    ColumnInfo,
+    TableInfo,
+    SchemaInfo,
+    IndexInfo,
+    ConstraintInfo,
 
-export interface MCPServerConfig {
-    databases: DatabaseConfig[];
-    oauth?: {
-        enabled: boolean;
-    };
-}
+    // MCP types
+    TransportType,
+    McpServerConfig,
 
-// Placeholder - will be implemented
-export function createServer(_config: MCPServerConfig): void {
-    console.log('db-mcp server - coming soon');
-}
+    // OAuth types
+    OAuthConfig,
+    OAuthScope,
+    TokenClaims,
+    RequestContext,
+
+    // Tool filtering types
+    ToolGroup,
+    ToolFilterRule,
+    ToolFilterConfig,
+
+    // Adapter types
+    AdapterCapabilities,
+    ToolDefinition,
+    ResourceDefinition,
+    PromptDefinition
+} from './types/index.js';
+
+// Error classes
+export {
+    DbMcpError,
+    ConnectionError,
+    QueryError,
+    AuthenticationError,
+    AuthorizationError,
+    ValidationError
+} from './types/index.js';
+
+// Base adapter class
+export { DatabaseAdapter } from './adapters/DatabaseAdapter.js';
+
+// Tool filtering utilities
+export {
+    TOOL_GROUPS,
+    parseToolFilter,
+    isToolEnabled,
+    filterTools,
+    getToolFilterFromEnv,
+    getFilterSummary,
+    calculateTokenSavings,
+    getAllToolNames,
+    getToolGroup
+} from './filtering/ToolFilter.js';
+
+// Version info
+export const VERSION = '0.1.0';
+export const NAME = 'db-mcp';
