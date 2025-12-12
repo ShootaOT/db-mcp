@@ -13,6 +13,36 @@ A multi-database **Model Context Protocol (MCP)** server written in TypeScript, 
 - 🛡️ **Tool Filtering** - Control which database operations are exposed
 - 👥 **Access Control** - Limit users to read-only operations or specific databases
 - 🗄️ **Multi-Database Support** - Connect to multiple database types simultaneously
+- ⚡ **Code Mode Architecture** - Built using the MCP SDK for maximum flexibility
+
+## Architecture
+
+This server is built in **Code Mode** using the official MCP TypeScript SDK, rather than using stdio-based configuration. This architectural choice enables:
+
+| Capability | Benefit |
+|---|---|
+| **Dynamic Tool Registration** | Register/unregister database tools at runtime based on user permissions |
+| **OAuth 2.0 Integration** | Implement authentication middleware before tool execution |
+| **Per-Request Context** | Access user identity, scopes, and database restrictions per request |
+| **Tool Filtering** | Programmatically control which tools are available to each user |
+| **Multi-Tenancy** | Support multiple users with different database access levels |
+
+```typescript
+// Code Mode allows programmatic server control
+import { Server } from '@modelcontextprotocol/sdk/server';
+
+const server = new Server({
+  name: 'db-mcp',
+  version: '1.0.0'
+});
+
+// Dynamic tool registration based on user permissions
+server.setRequestHandler(ListToolsRequestSchema, async (request) => {
+  const userScopes = await validateOAuthToken(request);
+  return { tools: getToolsForScopes(userScopes) };
+});
+```
+
 
 ## Supported Databases
 
