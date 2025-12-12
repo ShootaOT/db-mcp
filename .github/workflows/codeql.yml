@@ -21,8 +21,9 @@ on:
       - '**.mjs'
       - '**.cjs'
       - 'package.json'
-  schedule:
-    - cron: '0 0 * * 1'
+  # Uncomment when JS/TS code is added:
+  # schedule:
+  #   - cron: '0 0 * * 1'
   workflow_dispatch:
 
 jobs:
