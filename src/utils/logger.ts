@@ -273,6 +273,10 @@ export class Logger {
         }
 
         // Output the sanitized log line
+        // Security: Log injection prevented by .replace(/[\r\n]/g) removing newlines
+        // Security: Sensitive data redacted by redactSensitiveData() masking password/token/key/secret fields
+        // codeql[js/log-injection]
+        // codeql[js/clear-text-logging]
         this.config.output(logLine);
 
         // Stack trace for errors
