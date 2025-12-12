@@ -48,14 +48,18 @@ export const TOOL_GROUPS: Record<ToolGroup, string[]> = {
         'json_merge'
     ],
     text: [
-        'fts_search',
-        'create_fts_index',
         'fuzzy_search',
         'regex_match',
         'text_similarity',
         'phonetic_search',
         'tokenize_text',
         'highlight_match'
+    ],
+    fts5: [
+        'fts_search',
+        'create_fts_index',
+        'fts_match_info',
+        'fts_rebuild'
     ],
     stats: [
         'describe_stats',
@@ -117,16 +121,18 @@ export const TOOL_GROUPS: Record<ToolGroup, string[]> = {
         'create_index',
         'drop_index',
         'reindex',
-        'optimize',
-        // Native SQLite transaction tools
+        'optimize'
+    ],
+    transactions: [
         'transaction_begin',
         'transaction_commit',
         'transaction_rollback',
         'transaction_savepoint',
         'transaction_release',
         'transaction_rollback_to',
-        'transaction_execute',
-        // Native SQLite window function tools
+        'transaction_execute'
+    ],
+    window: [
         'window_row_number',
         'window_rank',
         'window_lag_lead',

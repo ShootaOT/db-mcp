@@ -262,16 +262,19 @@ export interface RequestContext {
  * Tool group identifiers
  */
 export type ToolGroup =
-    | 'core'        // Basic CRUD, schema operations
-    | 'json'        // JSON/JSONB operations
-    | 'text'        // Text processing, FTS
-    | 'stats'       // Statistical analysis
-    | 'performance' // Performance optimization
-    | 'vector'      // Vector/semantic search
-    | 'geo'         // Geospatial operations
-    | 'backup'      // Backup & recovery
-    | 'monitoring'  // Monitoring & health
-    | 'admin';      // Administration
+    | 'core'         // Basic CRUD, schema operations
+    | 'json'         // JSON/JSONB operations
+    | 'text'         // Text processing
+    | 'fts5'         // Full-text search (FTS5)
+    | 'stats'        // Statistical analysis
+    | 'performance'  // Performance optimization
+    | 'vector'       // Vector/semantic search
+    | 'geo'          // Geospatial operations
+    | 'backup'       // Backup & recovery
+    | 'monitoring'   // Monitoring & health
+    | 'admin'        // Administration
+    | 'transactions' // Transaction control (native only)
+    | 'window';      // Window functions (native only)
 
 /**
  * Tool filter rule
