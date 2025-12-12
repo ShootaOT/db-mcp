@@ -2,9 +2,9 @@
 
 Last Updated December 12, 2025
 
-*Enterprise-grade SQLite MCP Server with OAuth 2.0 authentication & 89 specialized tools – TypeScript Edition*
+*Enterprise-grade SQLite MCP Server with OAuth 2.0 authentication & 89 specialized tools*
 
-> **⚠️ UNDER DEVELOPMENT** - This project is actively being developed and is not yet ready for production use.
+> **Beta** - This project is actively being developed and is not yet ready for production use.
 
 [![GitHub](https://img.shields.io/badge/GitHub-neverinfamous/db--mcp-blue?logo=github)](https://github.com/neverinfamous/db-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
