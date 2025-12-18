@@ -1,10 +1,11 @@
 /**
- * db-mcp - Centralized Logger
+ * db-mcp - Structured Logger
  * 
- * Structured logging with module-prefixed error codes,
- * severity levels, and contextual payloads.
+ * Centralized logging utility with RFC 5424 severity levels and structured output.
+ * Supports dual-mode logging: stderr for local debugging and MCP protocol notifications.
  * 
- * Format: [LEVEL] [module] [CODE] message (context)
+ * Format: [timestamp] [LEVEL] [MODULE] [CODE] message {context}
+ * Example: [2025-12-18T01:30:00Z] [ERROR] [DB] [CONNECT_FAILED] Failed to connect {"host":"localhost"}
  */
 
 // =============================================================================
@@ -12,31 +13,57 @@
 // =============================================================================
 
 /**
- * Log severity levels
+ * RFC 5424 syslog severity levels
+ * @see https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.1
  */
-export type LogLevel = 'error' | 'warning' | 'info';
+export type LogLevel =
+    | 'debug'       // 7 - Debug-level messages
+    | 'info'        // 6 - Informational messages
+    | 'notice'      // 5 - Normal but significant condition
+    | 'warning'     // 4 - Warning conditions
+    | 'error'       // 3 - Error conditions
+    | 'critical'    // 2 - Critical conditions
+    | 'alert'       // 1 - Action must be taken immediately
+    | 'emergency';  // 0 - System is unusable
 
 /**
- * Structured log payload
+ * Module identifiers for log categorization
  */
-export interface LogPayload {
-    /** Module name (e.g., 'AUTH', 'SERVER', 'SQLITE') */
-    module: string;
+export type LogModule =
+    | 'SERVER'      // MCP server lifecycle
+    | 'ADAPTER'     // Database adapter operations
+    | 'AUTH'        // OAuth/authentication
+    | 'TOOLS'       // Tool execution
+    | 'RESOURCES'   // Resource handlers
+    | 'PROMPTS'     // Prompt handlers
+    | 'TRANSPORT'   // HTTP/SSE/stdio transport
+    | 'QUERY'       // SQL query execution
+    | 'POOL'        // Connection pool
+    | 'FILTER'      // Tool filtering
+    | 'SQLITE'      // SQLite-specific
+    | 'DB'          // Generic database
+    | 'CLI';        // Command line interface
 
-    /** Operation being performed */
-    operation: string;
-
-    /** Entity identifier (e.g., token ID, database name) */
-    entityId?: string | undefined;
-
-    /** Additional context */
-    context?: Record<string, unknown> | undefined;
-
-    /** Error object if applicable */
-    error?: Error | undefined;
-
-    /** Stack trace (auto-extracted from error if provided) */
-    stack?: string | undefined;
+/**
+ * Structured log context following MCP logging standards
+ */
+export interface LogContext {
+    /** Module identifier */
+    module?: LogModule;
+    /** Module-prefixed error/event code (e.g., DB_CONNECT_FAILED) */
+    code?: string;
+    /** Operation being performed (e.g., executeQuery, connect) */
+    operation?: string;
+    /** Entity identifier (e.g., table name, connection id) */
+    entityId?: string;
+    /** Request identifier for tracing */
+    requestId?: string;
+    /** Error stack trace */
+    stack?: string;
+    /** Error object (stack extracted automatically) */
+    error?: Error;
+    /** Additional context fields */
+    [key: string]: unknown;
 }
 
 /**
@@ -45,10 +72,8 @@ export interface LogPayload {
 export interface ErrorCode {
     /** Module prefix (e.g., 'AUTH', 'DB', 'SERVER') */
     module: string;
-
     /** Error code suffix (e.g., 'TOKEN_INVALID', 'CONNECT_FAILED') */
     code: string;
-
     /** Full code string (e.g., 'AUTH_TOKEN_INVALID') */
     full: string;
 }
@@ -103,152 +128,303 @@ export const ERROR_CODES = {
 // =============================================================================
 
 /**
- * Logger configuration
+ * RFC 5424 severity priority (lower number = higher severity)
  */
-export interface LoggerConfig {
-    /** Minimum log level to output */
-    minLevel?: LogLevel;
+const LEVEL_PRIORITY: Record<LogLevel, number> = {
+    emergency: 0,
+    alert: 1,
+    critical: 2,
+    error: 3,
+    warning: 4,
+    notice: 5,
+    info: 6,
+    debug: 7
+};
 
-    /** Whether to include timestamps */
-    timestamps?: boolean;
+/**
+ * Sensitive keys to redact from context objects
+ */
+const SENSITIVE_KEYS = new Set([
+    'password',
+    'secret',
+    'token',
+    'authorization',
+    'apikey',
+    'api_key',
+    'accesstoken',
+    'access_token',
+    'refreshtoken',
+    'refresh_token',
+    'credential',
+    'credentials',
+    'issuer',
+    'audience',
+    'jwksuri',
+    'jwks_uri',
+    'client_secret',
+    'clientsecret'
+]);
 
-    /** Whether to include stack traces for errors */
-    includeStacks?: boolean;
+/**
+ * Sanitize context by redacting sensitive values
+ */
+function sanitizeContext(context: LogContext): LogContext {
+    const result: LogContext = {};
 
-    /** Custom output function (defaults to console.error) */
-    output?: (message: string) => void;
+    for (const [key, value] of Object.entries(context)) {
+        // Skip internal fields
+        if (key === 'error') continue;
+
+        const lowerKey = key.toLowerCase();
+        const isSensitive = SENSITIVE_KEYS.has(lowerKey) ||
+            [...SENSITIVE_KEYS].some(k => lowerKey.includes(k));
+
+        if (isSensitive && value !== undefined && value !== null) {
+            result[key] = '[REDACTED]';
+        } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+            result[key] = sanitizeContext(value as LogContext);
+        } else {
+            result[key] = value;
+        }
+    }
+
+    return result;
 }
 
 /**
- * Centralized logger with structured payloads
+ * Sanitize message to prevent log injection
+ */
+function sanitizeMessage(message: string): string {
+    // Remove newlines and control characters
+    return message.replace(/\n|\r/g, ' ');
+}
+
+/**
+ * MCP-aware structured logger with dual-mode output
+ * 
+ * Follows MCP Server Logging Standards:
+ * - Centralized logger writing to stderr only (stdout reserved for MCP protocol)
+ * - Include: module, operation, entityId, context, stack traces
+ * - Module-prefixed codes (e.g., DB_CONNECT_FAILED, AUTH_TOKEN_INVALID)
+ * - Severity: RFC 5424 levels
+ * - Format: [timestamp] [LEVEL] [MODULE] [CODE] message {context}
  */
 export class Logger {
-    private readonly config: Required<LoggerConfig>;
-    private static readonly LEVEL_PRIORITY: Record<LogLevel, number> = {
-        error: 0,
-        warning: 1,
-        info: 2
-    };
+    private minLevel: LogLevel = 'info';
+    private loggerName = 'db-mcp';
+    private defaultModule: LogModule = 'SERVER';
+    private includeStacks = true;
 
-    constructor(config: LoggerConfig = {}) {
-        this.config = {
-            minLevel: config.minLevel ?? 'info',
-            timestamps: config.timestamps ?? true,
-            includeStacks: config.includeStacks ?? true,
-            output: config.output ?? console.error.bind(console)
-        };
+    /**
+     * Set the minimum log level
+     */
+    setLevel(level: LogLevel): void {
+        this.minLevel = level;
     }
 
     /**
-     * Log an error message
+     * Get the current minimum log level
      */
-    error(module: string, code: string | ErrorCode, message: string, payload?: Partial<LogPayload>): void {
-        this.log('error', module, code, message, payload);
+    getLevel(): LogLevel {
+        return this.minLevel;
     }
 
     /**
-     * Log a warning message
+     * Set the logger name
      */
-    warning(module: string, code: string | ErrorCode, message: string, payload?: Partial<LogPayload>): void {
-        this.log('warning', module, code, message, payload);
+    setLoggerName(name: string): void {
+        this.loggerName = name;
     }
 
     /**
-     * Log an info message
+     * Set the default module for logs without explicit module
      */
-    info(module: string, code: string | ErrorCode, message: string, payload?: Partial<LogPayload>): void {
-        this.log('info', module, code, message, payload);
+    setDefaultModule(module: LogModule): void {
+        this.defaultModule = module;
+    }
+
+    /**
+     * Enable/disable stack traces for errors
+     */
+    setIncludeStacks(include: boolean): void {
+        this.includeStacks = include;
+    }
+
+    private shouldLog(level: LogLevel): boolean {
+        return LEVEL_PRIORITY[level] <= LEVEL_PRIORITY[this.minLevel];
+    }
+
+    /**
+     * Format log entry according to MCP logging standard
+     * Format: [timestamp] [LEVEL] [MODULE] [CODE] message {context}
+     */
+    private formatEntry(
+        level: LogLevel,
+        module: LogModule,
+        code: string | undefined,
+        message: string,
+        context?: LogContext
+    ): string {
+        const parts: string[] = [
+            `[${new Date().toISOString()}]`,
+            `[${level.toUpperCase()}]`,
+            `[${module}]`
+        ];
+
+        // Add code if present
+        if (code) {
+            parts.push(`[${code}]`);
+        }
+
+        // Add sanitized message
+        parts.push(sanitizeMessage(message));
+
+        // Add context if present (excluding module, code, error which are handled separately)
+        if (context) {
+            const { module, code, error, stack, ...restContext } = context;
+            void module; void code; void error; void stack; // Intentionally unused - handled separately
+            if (Object.keys(restContext).length > 0) {
+                const sanitizedContext = sanitizeContext(restContext);
+                parts.push(JSON.stringify(sanitizedContext));
+            }
+        }
+
+        return parts.join(' ');
     }
 
     /**
      * Core logging method
      */
-    private log(
-        level: LogLevel,
-        module: string,
-        code: string | ErrorCode,
-        message: string,
-        payload?: Partial<LogPayload>
-    ): void {
-        // Check if level should be logged
-        if (Logger.LEVEL_PRIORITY[level] > Logger.LEVEL_PRIORITY[this.config.minLevel]) {
+    private log(level: LogLevel, message: string, context?: LogContext): void {
+        if (!this.shouldLog(level)) {
             return;
         }
 
-        // Normalize code
-        const codeStr = typeof code === 'string' ? code : code.full;
+        const module = context?.module ?? this.defaultModule;
+        const code = context?.code;
 
-        // Build log parts - only trusted, non-user-controlled data here
-        const trustedParts: string[] = [];
+        const formatted = this.formatEntry(level, module, code, message, context);
 
-        // Timestamp - trusted (system generated)
-        if (this.config.timestamps) {
-            trustedParts.push(`[${new Date().toISOString()}]`);
-        }
+        // Write to stderr to avoid interfering with MCP stdio transport
+        console.error(formatted);
 
-        // Level - trusted (internal enum)
-        trustedParts.push(`[${level.toUpperCase()}]`);
-
-        // Module - trusted (internal string from code)
-        trustedParts.push(`[${module.toUpperCase()}]`);
-
-        // Code - trusted (internal string/ErrorCode from code)
-        trustedParts.push(`[${codeStr}]`);
-
-        // Build the trusted prefix (no user data)
-        const trustedPrefix = trustedParts.join(' ');
-
-        // Sanitize message using the exact pattern CodeQL recognizes as a sanitizer
-        // CodeQL example shows: username.replace(/\n|\r/g, "") as the sanitizer
-        const sanitizedMessage = message.replace(/\n|\r/g, '');
-
-        // Build the final log line - only include non-sensitive, sanitized data
-        // Note: Context is intentionally excluded to prevent any sensitive data leakage
-        // Callers should ensure context only contains non-sensitive diagnostic info
-        const logLine = `${trustedPrefix} ${sanitizedMessage}`;
-
-        // Output with final sanitization pass using CodeQL-recognized pattern
-        this.config.output(logLine.replace(/\n|\r/g, ''));
-
-        // Stack trace for errors (internal data, not user-controlled)
-        if (this.config.includeStacks && level === 'error') {
-            const stack = payload?.stack ?? payload?.error?.stack;
+        // Stack trace for errors
+        if (this.includeStacks && (level === 'error' || level === 'critical' || level === 'alert' || level === 'emergency')) {
+            const stack = context?.stack ?? context?.error?.stack;
             if (stack) {
-                // Stack traces are internal, just remove dangerous control chars
                 // eslint-disable-next-line no-control-regex -- Intentionally matching control characters for security
                 const sanitizedStack = stack.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
-                this.config.output(`  Stack: ${sanitizedStack}`);
+                console.error(`  Stack: ${sanitizedStack}`);
             }
         }
     }
 
+    // =========================================================================
+    // Convenience methods for each log level
+    // =========================================================================
+
+    debug(message: string, context?: LogContext): void {
+        this.log('debug', message, context);
+    }
+
+    info(message: string, context?: LogContext): void {
+        this.log('info', message, context);
+    }
+
+    notice(message: string, context?: LogContext): void {
+        this.log('notice', message, context);
+    }
+
+    warn(message: string, context?: LogContext): void {
+        this.log('warning', message, context);
+    }
+
+    warning(message: string, context?: LogContext): void {
+        this.log('warning', message, context);
+    }
+
+    error(message: string, context?: LogContext): void {
+        this.log('error', message, context);
+    }
+
+    critical(message: string, context?: LogContext): void {
+        this.log('critical', message, context);
+    }
+
+    alert(message: string, context?: LogContext): void {
+        this.log('alert', message, context);
+    }
+
+    emergency(message: string, context?: LogContext): void {
+        this.log('emergency', message, context);
+    }
+
+    // =========================================================================
+    // Module-scoped logging helpers
+    // =========================================================================
+
     /**
-     * Create a child logger with a fixed module prefix
+     * Create a child logger scoped to a specific module
+     */
+    forModule(module: LogModule): ModuleLogger {
+        return new ModuleLogger(this, module);
+    }
+
+    /**
+     * Create a child logger (alias for forModule)
      */
     child(module: string): ModuleLogger {
-        return new ModuleLogger(this, module);
+        return new ModuleLogger(this, module as LogModule);
     }
 }
 
 /**
- * Module-scoped logger (child of main logger)
+ * Module-scoped logger for cleaner code in specific modules
  */
 export class ModuleLogger {
     constructor(
-        private readonly parent: Logger,
-        private readonly module: string
+        private parent: Logger,
+        private module: LogModule
     ) { }
 
-    error(code: string | ErrorCode, message: string, payload?: Partial<LogPayload>): void {
-        this.parent.error(this.module, code, message, payload);
+    private withModule(context?: LogContext): LogContext {
+        return { ...context, module: this.module };
     }
 
-    warning(code: string | ErrorCode, message: string, payload?: Partial<LogPayload>): void {
-        this.parent.warning(this.module, code, message, payload);
+    debug(message: string, context?: LogContext): void {
+        this.parent.debug(message, this.withModule(context));
     }
 
-    info(code: string | ErrorCode, message: string, payload?: Partial<LogPayload>): void {
-        this.parent.info(this.module, code, message, payload);
+    info(message: string, context?: LogContext): void {
+        this.parent.info(message, this.withModule(context));
+    }
+
+    notice(message: string, context?: LogContext): void {
+        this.parent.notice(message, this.withModule(context));
+    }
+
+    warn(message: string, context?: LogContext): void {
+        this.parent.warn(message, this.withModule(context));
+    }
+
+    warning(message: string, context?: LogContext): void {
+        this.parent.warning(message, this.withModule(context));
+    }
+
+    error(message: string, context?: LogContext): void {
+        this.parent.error(message, this.withModule(context));
+    }
+
+    critical(message: string, context?: LogContext): void {
+        this.parent.critical(message, this.withModule(context));
+    }
+
+    alert(message: string, context?: LogContext): void {
+        this.parent.alert(message, this.withModule(context));
+    }
+
+    emergency(message: string, context?: LogContext): void {
+        this.parent.emergency(message, this.withModule(context));
     }
 }
 
@@ -266,4 +442,10 @@ export const logger = new Logger();
  */
 export function createModuleLogger(module: string): ModuleLogger {
     return logger.child(module);
+}
+
+// Initialize log level from environment
+const envLevel = process.env['LOG_LEVEL']?.toLowerCase();
+if (envLevel && envLevel in LEVEL_PRIORITY) {
+    logger.setLevel(envLevel as LogLevel);
 }
