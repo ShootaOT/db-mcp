@@ -118,7 +118,8 @@ function parseArgs(): Partial<McpServerConfig> {
  * Print help message
  */
 function printHelp(): void {
-    console.log(`
+    // Use stderr for all output - stdout is reserved for MCP protocol
+    console.error(`
 db-mcp - Multi-database MCP Server
 
 Usage: db-mcp [options]
