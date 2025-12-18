@@ -18,6 +18,7 @@ import {
     getFilterSummary,
     getToolFilterFromEnv
 } from '../filtering/ToolFilter.js';
+import { logger } from '../utils/logger.js';
 
 /**
  * Main db-mcp server class
@@ -45,7 +46,7 @@ export class DbMcpServer {
             : getToolFilterFromEnv();
 
         // Log filter summary
-        console.error(getFilterSummary(this.toolFilter));
+        logger.info(getFilterSummary(this.toolFilter), { module: 'FILTER' });
 
         // Register built-in tools
         this.registerBuiltInTools();
@@ -68,7 +69,7 @@ export class DbMcpServer {
         adapter.registerResources(this.server);
         adapter.registerPrompts(this.server);
 
-        console.error(`Registered adapter: ${adapter.name} (${adapterId})`);
+        logger.info(`Registered adapter: ${adapter.name} (${adapterId})`, { module: 'SERVER' });
     }
 
     /**
@@ -207,7 +208,7 @@ export class DbMcpServer {
     private async startStdio(): Promise<void> {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
-        console.error(`db-mcp server started (stdio transport)`);
+        logger.info(`db-mcp server started (stdio transport)`, { module: 'SERVER' });
     }
 
     /**
@@ -254,28 +255,28 @@ export class DbMcpServer {
         await this.server.connect(mcpTransport);
         await transport.start();
 
-        console.error(`db-mcp server started (HTTP transport on port ${String(this.config.port ?? 3000)})`);
+        logger.info(`db-mcp server started (HTTP transport on port ${String(this.config.port ?? 3000)})`, { module: 'TRANSPORT' });
     }
 
     /**
      * Gracefully shut down the server
      */
     async shutdown(): Promise<void> {
-        console.error('Shutting down db-mcp server...');
+        logger.info('Shutting down db-mcp server...', { module: 'SERVER' });
 
         // Disconnect all adapters
         for (const [id, adapter] of this.adapters) {
             try {
                 await adapter.disconnect();
-                console.error(`Disconnected adapter: ${id}`);
+                logger.info(`Disconnected adapter: ${id}`, { module: 'SERVER' });
             } catch (error) {
-                console.error(`Error disconnecting adapter ${id}:`, error);
+                logger.error(`Error disconnecting adapter ${id}`, { module: 'SERVER', error: error instanceof Error ? error : undefined });
             }
         }
 
         // Close MCP server
         await this.server.close();
-        console.error('Server shutdown complete');
+        logger.info('Server shutdown complete', { module: 'SERVER' });
     }
 }
 
